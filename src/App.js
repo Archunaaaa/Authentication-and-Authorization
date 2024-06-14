@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import UserLoginForm from "./Components/Login/UserLoginForm";
+import UserRegisterForm from "./Components/SignUp/UserRegisterForm";
+import AdminTable from "./Components/AdminTable";
+import UpdateUser from "./Components/UpdateUser";
+// import UserTable from "./Components/UserTable";
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <BrowserRouter>
+        <Routes>        
+          <Route path="/" element={<UserRegisterForm />} />
+          <Route path="/login" element={<UserLoginForm />} />
+          <Route path="/admintable" element={<AdminTable />} />
+          <Route path="/updateuser" element={<UpdateUser />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
-}
+};
 
 export default App;
