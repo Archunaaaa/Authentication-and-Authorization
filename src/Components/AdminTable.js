@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './UserTable.css';
 
 const AdminTable = () => {
   const [users, setUsers] = useState([]);

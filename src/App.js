@@ -4,7 +4,7 @@ import UserLoginForm from "./Components/Login/UserLoginForm";
 import UserRegisterForm from "./Components/SignUp/UserRegisterForm";
 import AdminTable from "./Components/AdminTable";
 import UpdateUser from "./Components/UpdateUser";
-// import UserTable from "./Components/UserTable";
+import UserTable from "./Components/UserTable";
 
 
 const App = () => {
@@ -14,6 +14,7 @@ const App = () => {
         <Routes>        
           <Route path="/" element={<UserRegisterForm />} />
           <Route path="/login" element={<UserLoginForm />} />
+          <Route path="usertable" element={<UserTable />} />
           <Route path="/admintable" element={<AdminTable />} />
           <Route path="/updateuser" element={<UpdateUser />} />
         </Routes>

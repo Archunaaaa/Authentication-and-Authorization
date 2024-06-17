@@ -12,7 +12,7 @@ const UserLoginForm = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-     
+
     }
   }, [navigate]);
 
@@ -70,7 +70,7 @@ const UserLoginForm = () => {
   return (
     <div id="login-form" className="container">
       <div className="card p-5">
-        <h1>Login</h1>
+        <h2 className="text-center">Login</h2>
         <form onSubmit={handleLoginSubmit}>
           <div className="mb-3">
             <input
@@ -90,17 +90,17 @@ const UserLoginForm = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">
+          <button type="submit" className="btn btn-primarys w-100">
             Login
           </button>
           <p className="text-center mt-3">
             <a href="javascript:void(0)" className="text-decoration-none">
               Forgotten account
             </a>
-            <a href="/" className="ms-4">
+            <a href="/" className=" m-2">
               Signup
             </a>
-          </p>
+          </p>    
           <hr />
           {message && <p className="text-danger">{message}</p>}
         </form>

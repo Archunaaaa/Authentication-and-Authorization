@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./Register.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import UserTable from "../UserTable";
 
 const UserRegisterForm = () => {
   const [userName, setUserName] = useState("");
@@ -73,20 +74,9 @@ const UserRegisterForm = () => {
     }
   };
 
-  const redirectToLogin = () => {
-    navigate("/login");
-  };
-
   return (
     <>
       <div id="signup-form" className="container mt-5">
-        <div>
-          <button className="btn btn-success mb-4" onClick={redirectToLogin}>
-            Log in
-          </button>
-        </div>
-        {message && <p>{message}</p>}
-        <div className="card p-5">
           <h2 className="text-center mb-3">SignUp Form</h2>
           <form onSubmit={handleSignupSubmit}>
             <div className="mb-3">
@@ -144,16 +134,15 @@ const UserRegisterForm = () => {
               </select>
               {errors.role && <p className="text-danger">{errors.role}</p>}
             </div>
-            <button type="submit" className="btn btn-primary w-100">Create Account</button>
+            <button type="submit" className="btn btn-primary fw-bold">Create Account</button>
             <p className="text-center mt-3">
               Clicking <strong>Create Account</strong> means that you agree to
               our <a href="javascript:void(0)">terms of service</a>.
               <a href="/login" className="ms-4">Login</a>
             </p>
             <hr />
-          </form>
+          </form> 
         </div>
-      </div>
     </>
   );
 };

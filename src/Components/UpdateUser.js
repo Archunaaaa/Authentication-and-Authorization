@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const UpdateUser = () => {
+  const [userId, setUserId] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [mobileNo, setMobileNo] = useState('');
@@ -11,18 +12,34 @@ const UpdateUser = () => {
   const [role, setRole] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const location = useLocation();
+  const { username } = useParams(); // Get the username from the URL parameters
 
   useEffect(() => {
-    if (location.state && location.state.userData) {
-      const { userName, email, mobileNo } = location.state.userData.Details;
-      const userRole = location.state.userData.Authorities[0].authority;
-      setFullName(userName);
-      setEmail(email);
-      setMobileNo(mobileNo);
-      setRole(userRole);
-    }
-  }, [location.state]);
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await axios.get(`http://localhost:8080/api/user/getUser/${username}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        });
+        
+        const user = response.data;
+        setUserId(user.Details.userId);
+        setFullName(user.Details.userName);
+        setEmail(user.Details.email);
+        setMobileNo(user.Details.mobileNo);
+        setRole(user.Authorities[0].authority);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setMessage('Error fetching user data');
+      }
+    };
+
+    fetchUserData();
+  }, [username]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,15 +50,14 @@ const UpdateUser = () => {
     }
 
     const token = localStorage.getItem('token');
-    const userId = location.state.userData.Details.userId;
     const userData = {
-      userId,
       userName: fullName,
-      email,
-      mobileNo,
-      password,
-      confirmPassword,
+      email: email,
+      mobileNo: mobileNo,
+      password: password,
+      confirmPassword: confirmPassword,
       userRole: role,
+      userId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     };
 
     try {
@@ -63,6 +79,11 @@ const UpdateUser = () => {
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
         <h2>Update User</h2>
+        <input
+          type="text"
+          placeholder="User ID"
+          value={userId}
+        />
         <input
           type="text"
           placeholder="User Name"
@@ -110,9 +131,6 @@ const UpdateUser = () => {
         <button type="submit">Update</button>
         {message && <p>{message}</p>}
       </form>
-      <p>
-        You have an account? <Link to="/">Login</Link>
-      </p>
     </div>
   );
 };

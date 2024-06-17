@@ -1,0 +1,12 @@
+.btn-primarys {
+    background-color: #394867; 
+    color: #ffffff; 
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 85px;
+  }
+  
+  .btn-primarys:hover {
+    background-color: #293649; }

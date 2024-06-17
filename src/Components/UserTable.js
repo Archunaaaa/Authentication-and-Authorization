@@ -27,48 +27,25 @@ const UserTable = () => {
             Accept: 'application/json',
           },
         });
+
         setUserData(response.data);
       } catch (error) {
+        console.error('Error fetching user data:', error);
         if (error.response) {
           setError(error.response.data);
         } else {
           setError(error.message);
         }
-        console.error('Error fetching user data:', error);
       }
     };
 
     fetchUserData();
   }, []);
 
-  const handleEdit = async () => {
+  const handleEdit = () => {
     if (userData && userData.Details && userData.Details.userName) {
       const username = userData.Details.userName;
-
-      try {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-          setError({ error: { reason: 'Token not found in local storage' } });
-          return;
-        }
-
-        const response = await axios.get(`http://localhost:8080/api/user/getUserByName/${username}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const user = response.data;
-        navigate(`/edit/${username}`, { state: { userData: user } });
-      } catch (error) {
-        if (error.response) {
-          setError(error.response.data);
-        } else {
-          setError(error.message);
-        }
-        console.error('Error fetching user data for edit:', error);
-      }
+      navigate(`/edit/${username}`);
     }
   };
 
@@ -92,31 +69,27 @@ const UserTable = () => {
 
         navigate('/deleted');
       } catch (error) {
+        console.error('Error deleting user:', error);
         if (error.response) {
           setError(error.response.data);
         } else {
           setError(error.message);
         }
-        console.error('Error deleting user:', error);
       }
     }
   };
 
-  if (error) {
-    return (
-      <div className="user-table-container">
-        <p>Error: {error.error?.reason || 'Unknown error occurred'}</p>
-        <p>Timestamp: {error.timeStamp || 'No timestamp available'}</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="user-table-container">
-      {userData ? (
+    <div className="container tab-style">
+      {error ? (
+        <div>
+          <p>Error: {error.error ? error.error.reason : error}</p>
+          {error.timeStamp && <p>Timestamp: {error.timeStamp}</p>}
+        </div>
+      ) : userData ? (
         <div>
           <h2>User Profile</h2>
-          <table className="user-table">
+          <table className="table">
             <thead>
               <tr>
                 <th>User Name</th>
@@ -145,7 +118,7 @@ const UserTable = () => {
           </table>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>Loading..</p>
       )}
     </div>
   );
