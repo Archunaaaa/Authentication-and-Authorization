@@ -52,7 +52,7 @@
   
   .input-group {
     position: relative;
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
   }
   
   .password-input {
@@ -78,7 +78,8 @@
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
-    margin-left: 150px;
+    margin-left: 140px;
+    font-size: medium;
   }
   
   .btn-primary:hover {
