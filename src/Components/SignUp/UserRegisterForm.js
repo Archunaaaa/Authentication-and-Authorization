@@ -11,7 +11,7 @@ const UserRegisterForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-  const [role, setRole] = useState("");
+  const [userRole, setRole] = useState("");
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
@@ -24,7 +24,7 @@ const UserRegisterForm = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/auth/users");
+      const response = await axios.get("http://localhost:8080/api/auth/admin/check");
       setUsers(response.data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -61,8 +61,8 @@ const UserRegisterForm = () => {
     } else if (!/^\d{10}$/.test(mobileNo)) {
       errors.mobileNo = "Mobile number must be 10 digits";
     }
-    if (!role) {
-      errors.role = "Role is required";
+    if (!userRole) {
+      errors.userRole = "Role is required";
     }
 
     setErrors(errors);
@@ -79,8 +79,9 @@ const UserRegisterForm = () => {
         userName,
         email,
         password,
+        confirmPassword,
         mobileNo,
-        role,
+        userRole,
       };
 
       const response = await axios.post("http://localhost:8080/api/auth/user/register", userData);
@@ -150,17 +151,20 @@ const UserRegisterForm = () => {
         </div>
         <div className="input-group mb-3">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             className="form-control password-input"
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+           <span className="toggle-password" onClick={togglePasswordVisibility}>
+            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+          </span>
           {errors.confirmPassword && <p className="text-danger">{errors.confirmPassword}</p>}
         </div>
         <div className="mb-3">
           <select
-            value={role}
+            value={userRole}
             className="form-control"
             onChange={(e) => setRole(e.target.value)}
           >
@@ -168,13 +172,13 @@ const UserRegisterForm = () => {
             <option value="admin">Admin</option>
             <option value="user">User</option>
           </select>
-          {errors.role && <p className="text-danger">{errors.role}</p>}
+          {errors.userRole && <p className="text-danger">{errors.userRole}</p>}
         </div>
         <button type="submit" className="btn btn-primary fw-bold">Create Account</button>
         <p className="text-center mt-3">
           Clicking <strong>Create Account</strong> means that you agree to
-          our <a href="javascript:void(0)">terms of service</a>.
-          <a className="m-5" href="/login">Existing User? Log in</a>
+          our <a href="javascript:void(0)"className="text-decoration">terms of service</a>.
+          <a className="m-5 text-decoration" href="/login">Existing User? Login</a>
         </p>
         <hr />
       </form>
