@@ -9,14 +9,14 @@ const AdminTable = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const token = localStorage.getItem('token');
-
-      if (!token) {
+      const getAllusers = localStorage.getItem('getAllusers');
+      if (!token || !getAllusers) {
         setError('Token not found in local storage');
         return;
       }
 
       try {
-        const response = await axios.get('http://localhost:8080/api/admin/getAllusers', {
+        const response = await axios.get(`http://localhost:8080/api/admin/${getAllusers}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

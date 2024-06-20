@@ -16,7 +16,7 @@ const App = () => {
           <Route path="/login" element={<UserLoginForm />} />
           <Route path="/usertable" element={<UserTable />} />
           <Route path="/admintable" element={<AdminTable />} />
-          <Route path="edit/:username" element={<UpdateUser />} />
+          <Route path="edit/:UpdateUser" element={<UpdateUser />} />
         </Routes>
       </BrowserRouter>
     </div>
