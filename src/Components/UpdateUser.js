@@ -32,7 +32,7 @@ const UpdateUser = () => {
         setEmail(user.Details.email);
         setMobileNo(user.Details.mobileNo);
         setRole(user.Authorities[0].authority);
-      } catch (error) {
+      } catch (error) { 
         console.error('Error fetching user data:', error);
         setMessage('Error fetching user data');
       }
