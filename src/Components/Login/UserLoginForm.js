@@ -92,65 +92,99 @@
 
 // export default UserLoginForm;
 
-import React, { useState } from "react";
+// src/Components/Login/UserLoginForm.js
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginRequest } from '../../Store/Auth/AuthSlice';
-import "./Login.css";
+import { loginUser } from '../../Store/Auth/AuthSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import './Login.css';
 
 const UserLoginForm = () => {
-  const [fullName, setFullName] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const message = useSelector((state) => state.auth.message);
+  const error = useSelector((state) => state.auth.error);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validateInputs = () => {
+    let errors = {};
+
+    if (!username.trim()) {
+      errors.username = 'Username is required';
+    }
+    if (!password.trim()) {
+      errors.password = 'Password is required';
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    dispatch(loginRequest({ userName: fullName, password, navigate }));
+    if (!validateInputs()) {
+      return;
+    }
+
+    dispatch(loginUser({ username, password }));
   };
 
+  // Redirect user to Usertable  on successful login
+  React.useEffect(() => {
+    if (message === 'Login successful!') {
+      navigate('/usertable');
+    }
+  }, [message, navigate]);
+
   return (
-    <div id="login-form" className="container">
-      <div className="card carding p-5">
-        <h2 className="text-center">Login</h2>
-        <form onSubmit={handleLoginSubmit} className="">
-          <div className="mb-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter email or username"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          </div>
-          <div className="mb-3 password-field">
-            <input
-              type={passwordVisible ? "text" : "password"}
-              className="form-control"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button type="submit" className="btn btn-primarys w-100">
-            Login
-          </button>
-          <p className="text-center mt-3">
-            <a href="javascript:void(0)" className="text-decoration-none">
-              Forgotten account
-            </a>
-            <a href="/" className="text-decoration-none ms-4">
-              Signup
-            </a>
-          </p>
-          <hr />
-          {message && <p className="text-danger">{message}</p>}
-        </form>
-      </div>
+    <div id="login-form" className="container mt-5">
+      <h2 className="text-center mb-3">Login Form</h2>
+      <form onSubmit={handleLoginSubmit}>
+        <div className="mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          {errors.username && <p className="text-danger">{errors.username}</p>}
+        </div>
+        <div className="input-group mb-3">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            className="form-control password-input"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <span className="toggle-password" onClick={togglePasswordVisibility}>
+            <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+          </span>
+          {errors.password && <p className="text-danger">{errors.password}</p>}
+        </div>
+        <button type="submit" className="btn btn-primarys fw-bold">
+          Login
+        </button>
+        <p className="text-center mt-3">
+          Don't have an account? <a href="/" className="text-decoration">Sign Up</a>
+        </p>
+        <hr />
+      </form>
+      {message && <p className="text-center mt-3">{message}</p>}
+      {error && <p className="text-center mt-3 text-danger">{error}</p>}
     </div>
   );
 };
 
 export default UserLoginForm;
+

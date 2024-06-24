@@ -1,24 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+// src/app/store.js
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './RootReducer';
 
-const authSlice = createSlice({
-  name: 'auth',
-  initialState: {
-    message: '',
-    error: '',
-  },
-  reducers: {
-    loginRequest: (state, action) => {},
-    loginSuccess: (state, action) => {
-      state.message = action.payload;
-      state.error = '';
-    },
-    loginFailure: (state, action) => {
-      state.message = '';
-      state.error = action.payload;
-    },
-  },
+const store = configureStore({
+  reducer: rootReducer,
 });
 
-export const { loginRequest, loginSuccess, loginFailure } = authSlice.actions;
-
-export default authSlice.reducer;
+export default store;

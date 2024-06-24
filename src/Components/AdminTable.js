@@ -24,7 +24,7 @@ const AdminTable = () => {
 
         setUsers(response.data);
       } catch (error) {
-        setError('Error fetching user data');
+        setError('Error fetching user data'); 
         console.error('Error fetching user data:', error);
       }
     };

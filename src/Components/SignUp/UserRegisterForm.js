@@ -191,10 +191,11 @@
 
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { registerRequest } from '../../Store/Auth/AuthSlice';  // Adjust the path as necessary
+import axios from 'axios';
+import { registerRequest, registerSuccess, registerFailure } from '../../Store/Auth/AuthSlice'; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "./Register.css";
@@ -211,6 +212,13 @@ const UserRegisterForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const message = useSelector((state) => state.auth.message);
+  const error = useSelector((state) => state.auth.error);
+
+  useEffect(() => {
+    if (message === "User registered successfully!") {
+      navigate("/login");
+    }
+  }, [message, navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -250,25 +258,44 @@ const UserRegisterForm = () => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSignupSubmit = (e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault();
     if (!validateInputs()) {
       return;
     }
 
-    dispatch(registerRequest({
-      userName,
-      email,
-      password,
-      confirmPassword,
-      mobileNo,
-      userRole,
-      navigate
-    }));
+    dispatch(registerRequest());
+
+    try {
+      const userData = {
+        userName,
+        email,
+        password,
+        confirmPassword,
+        mobileNo,
+        userRole,
+      };
+
+      const response = await axios.post("http://localhost:8080/api/auth/user/register", userData);
+      dispatch(registerSuccess("User registered successfully!"));
+      localStorage.setItem("token", response.data.token);
+      navigate("/login");
+    } catch (error) {
+      if (error.response) {
+        dispatch(registerFailure(`Error: ${error.response.data.message}`));
+        console.error("Server responded with error:", error.response.data);
+      } else if (error.request) {
+        dispatch(registerFailure("Error: No response received from server."));
+        console.error("No response received from server:", error.request);
+      } else {
+        dispatch(registerFailure("Error: Something went wrong while sending the request."));
+        console.error("Error during request setup:", error.message);
+      }
+    }
   };
 
   return (
-    <div id="signup-form" className="container mt-5">
+    <div id="signup-form" className="container ">
       <h2 className="text-center mb-3">SignUp Form</h2>
       <form onSubmit={handleSignupSubmit}>
         <div className="mb-3">
@@ -348,6 +375,7 @@ const UserRegisterForm = () => {
         <hr />
       </form>
       {message && <p className="text-center mt-3">{message}</p>}
+      {error && <p className="text-center mt-3 text-danger">{error}</p>}
     </div>
   );
 };
