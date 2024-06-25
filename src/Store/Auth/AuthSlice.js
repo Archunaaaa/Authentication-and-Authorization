@@ -1,56 +1,46 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const initialState = {
+  user: null,
+  error: null,
+  message: null,
+};
+
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    message: '',
-    error: '',
-    isLoggedIn: false,
-    user: null,
-  },
+  initialState,
   reducers: {
     loginRequest: (state) => {
-      state.message = 'Logging in...';
-      state.error = '';
+      state.error = null;
+      state.message = null;
     },
     loginSuccess: (state, action) => {
+      state.user = action.payload.user; // Assuming action.payload contains user data
       state.message = 'Login successful!';
-      state.error = '';
-      state.isLoggedIn = true;
-      state.user = action.payload;
     },
     loginFailure: (state, action) => {
-      state.message = '';
       state.error = action.payload;
-      state.isLoggedIn = false;
-      state.user = null;
+      state.message = null;
     },
     registerRequest: (state) => {
-      state.message = 'Registering...';
-      state.error = '';
+      state.error = null;
+      state.message = null;
     },
     registerSuccess: (state, action) => {
-      state.message = 'Registration successful!';
-      state.error = '';
-      state.isLoggedIn = true;
-      state.user = action.payload;
+      state.user = action.payload.user; // Assuming action.payload contains user data
+      state.message = 'User registered successfully!';
     },
     registerFailure: (state, action) => {
-      state.message = '';
       state.error = action.payload;
-      state.isLoggedIn = false;
-      state.user = null;
-    },
-    logout: (state) => {
-      state.isLoggedIn = false;
-      state.user = null;
-      localStorage.removeItem('token');
+      state.message = null;
     },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, registerRequest, registerSuccess, registerFailure, logout } = authSlice.actions;
+export const { loginRequest, loginSuccess, loginFailure, registerRequest, registerSuccess, registerFailure } = authSlice.actions;
+
+// Async action creators
 
 export const loginUser = (userData) => async (dispatch) => {
   dispatch(loginRequest());
@@ -58,7 +48,7 @@ export const loginUser = (userData) => async (dispatch) => {
     const response = await axios.post('http://localhost:8080/api/auth/user/login', userData);
     const { token, user } = response.data;
     localStorage.setItem('token', token);
-    dispatch(loginSuccess(user));
+    dispatch(loginSuccess({ user }));
   } catch (error) {
     if (error.response) {
       dispatch(loginFailure(`Error: ${error.response.data.message}`));
@@ -76,7 +66,7 @@ export const registerUser = (userData) => async (dispatch) => {
     const response = await axios.post('http://localhost:8080/api/auth/user/register', userData);
     const { token, user } = response.data;
     localStorage.setItem('token', token);
-    dispatch(registerSuccess(user));
+    dispatch(registerSuccess({ user }));
   } catch (error) {
     if (error.response) {
       dispatch(registerFailure(`Error: ${error.response.data.message}`));

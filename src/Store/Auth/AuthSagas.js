@@ -1,11 +1,11 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import axios from 'axios';
-import { loginRequest, loginSuccess, loginFailure } from './AuthSlice';
+import { loginRequest, loginSuccess, loginFailure } from '../Store/Auth/AuthSlice';
 
 function* handleLogin(action) {
   try {
     const response = yield call(axios.post, 'http://localhost:8080/api/auth/user/login', {
-      userName: action.payload.userName,
+      userName: action.payload.username,
       password: action.payload.password,
     });
 
@@ -22,9 +22,9 @@ function* handleLogin(action) {
       } else {
         yield put(loginFailure("Unexpected user role"));
       }
-      yield put(loginSuccess("Login successful"));
+      yield put(loginSuccess("Login successful!"));
     } else {
-      yield put(loginFailure("User not found"));
+      yield put(loginFailure("User is not found"));
     }
   } catch (error) {
     yield put(loginFailure("Error logging in"));
