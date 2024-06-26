@@ -20,14 +20,14 @@ function* handleLogin(action) {
       } else if (responseBody.role === "ADMIN") {
         action.payload.navigate("/admintable");
       } else {
-        yield put(loginFailure("Unexpected user role"));
+        yield put(loginFailure({ error: "Unexpected user role" }));
       }
-      yield put(loginSuccess("Login successful!"));
+      yield put(loginSuccess({ user: responseBody }));
     } else {
-      yield put(loginFailure("User is not found"));
+      yield put(loginFailure({ error: "User is not found" }));
     }
   } catch (error) {
-    yield put(loginFailure("Error logging in"));
+    yield put(loginFailure({ error: "Error logging in" }));
   }
 }
 
