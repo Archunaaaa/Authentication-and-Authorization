@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Alert } from '@mui/material';
 import './UserTable.css';
 
 const AdminTable = () => {
@@ -24,7 +25,7 @@ const AdminTable = () => {
 
         setUsers(response.data);
       } catch (error) {
-        setError('Error fetching user data'); 
+        setError('Error fetching user data');
         console.error('Error fetching user data:', error);
       }
     };
@@ -34,38 +35,40 @@ const AdminTable = () => {
 
   if (error) {
     return (
-      <div className="container tab-style">
-        <p>Error: {error}</p>
-      </div>
+      <Container className="tab-style">
+        <Alert severity="error">{error}</Alert>
+      </Container>
     );
   }
 
   return (
-    <div className="container tab-style">
-      <div>
-        <h2>Admin Profile</h2>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>User Name</th>
-              <th>Email</th>
-              <th>Mobile Number</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
+    <Container className="tab-style">
+      <Typography variant="h2" gutterBottom>
+        Admin Profile
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>User Name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Mobile Number</TableCell>
+              <TableCell>Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {users && users.map(user => (
-              <tr key={user.userId}>
-                <td>{user.userName}</td>
-                <td>{user.email}</td>
-                <td>{user.mobileNo}</td>
-                <td>{user.status}</td>
-              </tr>
+              <TableRow key={user.userId}>
+                <TableCell>{user.userName}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.mobileNo}</TableCell>
+                <TableCell>{user.status}</TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 
