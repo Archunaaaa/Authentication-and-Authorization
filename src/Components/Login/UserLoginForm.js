@@ -82,14 +82,14 @@ const UserLoginForm = () => {
               Login
             </button>
             <p className="text-center mt-3">
-              Don't have an account? <a href="/" className="text-decoration">Sign Up</a>
+              Don't have an account? <a href="/" className="text-decoration-none">Sign Up</a>
             </p>
             <hr />
           </Form>
         )}
       </Formik>
       {message && <p className="text-center mt-3">{message}</p>}
-      {error && <p className="text-center mt-3 text-danger">{error}</p>}
+      {error && <p className="text-center mt-3 text-danger">{error.message || 'Login failed. Please try again.'}</p>}
     </div>
   );
 };
