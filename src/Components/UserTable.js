@@ -24,8 +24,6 @@ const UserTable = () => {
           },
         });
 
-        console.log('Response headers:', response.headers);
-
         if (response.headers['content-type'] !== 'application/json') {
           throw new Error('Server did not respond with JSON data');
         }

@@ -16,7 +16,7 @@ const authSlice = createSlice({
       state.message = null;
     },
     loginSuccess: (state, action) => {
-      state.user = action.payload.user; // Assuming action.payload contains user data
+      state.user = action.payload.user;
       state.message = 'Login successful!';
     },
     loginFailure: (state, action) => {
@@ -28,7 +28,7 @@ const authSlice = createSlice({
       state.message = null;
     },
     registerSuccess: (state, action) => {
-      state.user = action.payload.user; // Assuming action.payload contains user data
+      state.user = action.payload.user;
       state.message = 'User registered successfully!';
     },
     registerFailure: (state, action) => {
@@ -38,9 +38,14 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, registerRequest, registerSuccess, registerFailure } = authSlice.actions;
-
-// Async action creators
+export const {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  registerRequest,
+  registerSuccess,
+  registerFailure,
+} = authSlice.actions;
 
 export const loginUser = (userData) => async (dispatch) => {
   dispatch(loginRequest());
@@ -48,19 +53,20 @@ export const loginUser = (userData) => async (dispatch) => {
     const response = await axios.post('http://localhost:8080/api/auth/user/login', userData);
     const { data } = response;
     if (data.status === 0) {
-      dispatch(loginFailure({ error: data.error.message }));
+      dispatch(loginFailure({ error: { message: data.error.message, code: data.error.code } }));
     } else {
       const { token, user } = data;
       localStorage.setItem('token', token);
       dispatch(loginSuccess({ user }));
+      userData.navigate(user.role === 'user' ? '/usertable' : '/admintable');
     }
   } catch (error) {
     if (error.response) {
-      dispatch(loginFailure({ error: `Error: ${error.response.data.message}` }));
+      dispatch(loginFailure({ error: { message: error.response.data.message, code: error.response.status } }));
     } else if (error.request) {
-      dispatch(loginFailure({ error: 'Error: No response received from server.' }));
+      dispatch(loginFailure({ error: { message: 'No response received from server.', code: 500 } }));
     } else {
-      dispatch(loginFailure({ error: 'Error: Something went wrong while sending the request.' }));
+      dispatch(loginFailure({ error: { message: 'Something went wrong while sending the request.', code: 500 } }));
     }
   }
 };
@@ -71,7 +77,7 @@ export const registerUser = (userData) => async (dispatch) => {
     const response = await axios.post('http://localhost:8080/api/auth/user/register', userData);
     const { data } = response;
     if (data.status === 0) {
-      dispatch(registerFailure({ error: data.error.message }));
+      dispatch(registerFailure({ error: { message: data.error.message, code: data.error.code } }));
     } else {
       const { token, user } = data;
       localStorage.setItem('token', token);
@@ -79,11 +85,11 @@ export const registerUser = (userData) => async (dispatch) => {
     }
   } catch (error) {
     if (error.response) {
-      dispatch(registerFailure({ error: `Error: ${error.response.data.message}` }));
+      dispatch(registerFailure({ error: { message: error.response.data.message, code: error.response.status } }));
     } else if (error.request) {
-      dispatch(registerFailure({ error: 'Error: No response received from server.' }));
+      dispatch(registerFailure({ error: { message: 'No response received from server.', code: 500 } }));
     } else {
-      dispatch(registerFailure({ error: 'Error: Something went wrong while sending the request.' }));
+      dispatch(registerFailure({ error: { message: 'Something went wrong while sending the request.', code: 500 } }));
     }
   }
 };

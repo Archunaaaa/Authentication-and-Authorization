@@ -39,8 +39,9 @@ const UserLoginForm = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLoginSubmit = (values) => {
-    dispatch(loginUser(values));
+  const handleLoginSubmit = (values, { setSubmitting }) => {
+    dispatch(loginUser({ ...values, navigate }));
+    setSubmitting(false);
   };
 
   return (
@@ -51,7 +52,7 @@ const UserLoginForm = () => {
         validationSchema={validationSchema}
         onSubmit={handleLoginSubmit}
       >
-        {({ values, handleChange }) => (
+        {({ isSubmitting }) => (
           <Form>
             <div className="mb-3">
               <Field
@@ -59,8 +60,6 @@ const UserLoginForm = () => {
                 name="username"
                 className="form-control"
                 placeholder="Username"
-                value={values.username}
-                onChange={handleChange}
               />
               <ErrorMessage name="username" component="p" className="text-danger" />
             </div>
@@ -70,15 +69,13 @@ const UserLoginForm = () => {
                 name="password"
                 className="form-control password-input"
                 placeholder="Password"
-                value={values.password}
-                onChange={handleChange}
               />
               <span className="toggle-password" onClick={togglePasswordVisibility}>
                 <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
               </span>
               <ErrorMessage name="password" component="p" className="text-danger" />
             </div>
-            <button type="submit" className="btn btn-primarys fw-bold">
+            <button type="submit" className="btn btn-primarys fw-bold" disabled={isSubmitting}>
               Login
             </button>
             <p className="text-center mt-3">
