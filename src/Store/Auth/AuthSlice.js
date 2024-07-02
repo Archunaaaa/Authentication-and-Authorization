@@ -55,10 +55,11 @@ export const loginUser = (userData) => async (dispatch) => {
     if (data.status === 0) {
       dispatch(loginFailure({ error: { message: data.error.message, code: data.error.code } }));
     } else {
-      const { token, user } = data;
-      localStorage.setItem('token', token);
-      dispatch(loginSuccess({ user }));
-      userData.navigate(user.role === 'user' ? '/usertable' : '/admintable');
+      const { body } = data.data;
+      localStorage.setItem('token', body.jwt);
+      localStorage.setItem('userRole', body.role);
+      dispatch(loginSuccess({ user: body }));
+      userData.navigate(body.role === 'user' ? '/usertable' : '/admintable');
     }
   } catch (error) {
     if (error.response) {
@@ -70,6 +71,7 @@ export const loginUser = (userData) => async (dispatch) => {
     }
   }
 };
+
 
 export const registerUser = (userData) => async (dispatch) => {
   dispatch(registerRequest());

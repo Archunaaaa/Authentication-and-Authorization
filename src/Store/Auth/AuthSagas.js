@@ -5,7 +5,7 @@ import { loginRequest, loginSuccess, loginFailure } from '../Store/Auth/AuthSlic
 function* handleLogin(action) {
   try {
     const response = yield call(axios.post, 'http://localhost:8080/api/auth/user/login', {
-      userName: action.payload.username,
+      email: action.payload.email,
       password: action.payload.password,
     });
 
@@ -13,7 +13,7 @@ function* handleLogin(action) {
 
     if (responseBody && responseBody.jwt) {
       localStorage.setItem("token", responseBody.jwt);
-      localStorage.setItem("username", responseBody.userName);
+      localStorage.setItem("userRole", responseBody.role); // Store user role in local storage
 
       if (responseBody.role === "USER") {
         action.payload.navigate("/usertable");
@@ -24,10 +24,10 @@ function* handleLogin(action) {
       }
       yield put(loginSuccess({ user: responseBody }));
     } else {
-      yield put(loginFailure({ error: "User is not found" }));
+      yield put(loginFailure({ error: { message: "User is not found" } }));
     }
   } catch (error) {
-    yield put(loginFailure({ error: "Error logging in" }));
+    yield put(loginFailure({ error: { message: "Error logging in" } }));
   }
 }
 

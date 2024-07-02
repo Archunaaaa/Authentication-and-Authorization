@@ -14,35 +14,33 @@ const UserLoginForm = () => {
   const dispatch = useDispatch();
 
   const initialValues = {
-    username: '',
+    email: '',
     password: '',
   };
 
   const validationSchema = Yup.object({
-    username: Yup.string().required('Username is required'),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
 
-  const { message, error, user } = useSelector((state) => state.auth);
+  const { error, message } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (message === 'Login successful!' && user && user.role) {
-      if (user.role === 'user') {
-        navigate('/usertable');
-      } else if (user.role === 'admin') {
-        navigate('/admintable');
-      }
+    if (message === 'Login successful!') {
+      const userRole = localStorage.getItem('userRole');
+      navigate(userRole === 'user' ? '/usertable' : '/admintable');
     }
-  }, [message, user, navigate]);
+  }, [message, navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLoginSubmit = (values, { setSubmitting }) => {
-    dispatch(loginUser({ ...values, navigate }));
+    dispatch(loginUser({ email: values.email, password: values.password, navigate }));
     setSubmitting(false);
   };
+  
 
   return (
     <div id="login-form" className="container mt-5">
@@ -56,12 +54,12 @@ const UserLoginForm = () => {
           <Form>
             <div className="mb-3">
               <Field
-                type="text"
-                name="username"
+                type="email"
+                name="email"
                 className="form-control"
-                placeholder="Username"
+                placeholder="Email"
               />
-              <ErrorMessage name="username" component="p" className="text-danger" />
+              <ErrorMessage name="email" component="p" className="text-danger" />
             </div>
             <div className="input-group mb-3">
               <Field
@@ -78,6 +76,7 @@ const UserLoginForm = () => {
             <button type="submit" className="btn btn-primarys fw-bold" disabled={isSubmitting}>
               Login
             </button>
+            {error && <p className="text-center mt-3 text-danger">{error.message}</p>}
             <p className="text-center mt-3">
               Don't have an account? <a href="/" className="text-decoration-none">Sign Up</a>
             </p>
@@ -86,7 +85,6 @@ const UserLoginForm = () => {
         )}
       </Formik>
       {message && <p className="text-center mt-3">{message}</p>}
-      {error && <p className="text-center mt-3 text-danger">{error.message || 'Login failed. Please try again.'}</p>}
     </div>
   );
 };
