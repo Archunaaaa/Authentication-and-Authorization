@@ -27,8 +27,8 @@ const UserLoginForm = () => {
 
   useEffect(() => {
     if (message === 'Login successful!') {
-      const userRole = localStorage.getItem('userRole');
-      navigate(userRole === 'user' ? '/usertable' : '/admintable');
+      const role = localStorage.getItem('role');
+      navigate(role === 'USER' ? '/usertable' : '/admintable');
     }
   }, [message, navigate]);
 
@@ -37,10 +37,9 @@ const UserLoginForm = () => {
   };
 
   const handleLoginSubmit = (values, { setSubmitting }) => {
-    dispatch(loginUser({ email: values.email, password: values.password, navigate }));
+    dispatch(loginUser({ ...values, navigate }));
     setSubmitting(false);
   };
-  
 
   return (
     <div id="login-form" className="container mt-5">
@@ -52,7 +51,7 @@ const UserLoginForm = () => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <div className="mb-3">
+            <div className="form-group mb-3">
               <Field
                 type="email"
                 name="email"
@@ -73,7 +72,7 @@ const UserLoginForm = () => {
               </span>
               <ErrorMessage name="password" component="p" className="text-danger" />
             </div>
-            <button type="submit" className="btn btn-primarys fw-bold" disabled={isSubmitting}>
+            <button type="submit" className="btn btn-primarys fw-bold w-100" disabled={isSubmitting}>
               Login
             </button>
             {error && <p className="text-center mt-3 text-danger">{error.message}</p>}

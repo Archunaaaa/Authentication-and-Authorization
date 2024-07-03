@@ -47,23 +47,42 @@ export const {
   registerFailure,
 } = authSlice.actions;
 
+const formatErrorMessage = (message) => {
+  const errorMessages = {
+    "Usernot found.!": "User not found!",
+  };
+  return errorMessages[message] || message;
+};
+
 export const loginUser = (userData) => async (dispatch) => {
   dispatch(loginRequest());
   try {
-    const response = await axios.post('http://localhost:8080/api/auth/user/login', userData);
+    const response = await axios.post('http://localhost:8080/api/auth/user/login', {
+      email: userData.email,
+      password: userData.password,
+    });
     const { data } = response;
     if (data.status === 0) {
-      dispatch(loginFailure({ error: { message: data.error.message, code: data.error.code } }));
+      const formattedMessage = formatErrorMessage(data.error.message);
+      dispatch(loginFailure({ error: { message: formattedMessage, code: data.error.code } }));
     } else {
-      const { body } = data.data;
-      localStorage.setItem('token', body.jwt);
-      localStorage.setItem('userRole', body.role);
-      dispatch(loginSuccess({ user: body }));
-      userData.navigate(body.role === 'user' ? '/usertable' : '/admintable');
+      const { token, role } = data.data.body; 
+      localStorage.setItem('token', token);
+      localStorage.setItem('role', role);
+      dispatch(loginSuccess({ user: data.data.body })); 
+      if (role === "USER") {
+        userData.navigate("/usertable");
+      } else if (role === "ADMIN") {
+        userData.navigate("/admintable");
+      } else {
+        dispatch(loginFailure({ error: { message: "Unexpected user role", code: 500 } }));
+        console.error("Unexpected user role", role);
+      }
     }
   } catch (error) {
     if (error.response) {
-      dispatch(loginFailure({ error: { message: error.response.data.message, code: error.response.status } }));
+      const formattedMessage = formatErrorMessage(error.response.data.message);
+      dispatch(loginFailure({ error: { message: formattedMessage, code: error.response.status } }));
     } else if (error.request) {
       dispatch(loginFailure({ error: { message: 'No response received from server.', code: 500 } }));
     } else {
@@ -72,22 +91,24 @@ export const loginUser = (userData) => async (dispatch) => {
   }
 };
 
-
 export const registerUser = (userData) => async (dispatch) => {
   dispatch(registerRequest());
   try {
     const response = await axios.post('http://localhost:8080/api/auth/user/register', userData);
     const { data } = response;
     if (data.status === 0) {
-      dispatch(registerFailure({ error: { message: data.error.message, code: data.error.code } }));
+      const formattedMessage = formatErrorMessage(data.error.message);
+      dispatch(registerFailure({ error: { message: formattedMessage, code: data.error.code } }));
     } else {
-      const { token, user } = data;
+      const { token, role } = data.data.body; // Adjusted to match the response structure
       localStorage.setItem('token', token);
-      dispatch(registerSuccess({ user }));
+      localStorage.setItem('role', role); // Store user role in local storage
+      dispatch(registerSuccess({ user: data.data.body })); // Adjusted to match the response structure
     }
   } catch (error) {
     if (error.response) {
-      dispatch(registerFailure({ error: { message: error.response.data.message, code: error.response.status } }));
+      const formattedMessage = formatErrorMessage(error.response.data.message);
+      dispatch(registerFailure({ error: { message: formattedMessage, code: error.response.status } }));
     } else if (error.request) {
       dispatch(registerFailure({ error: { message: 'No response received from server.', code: 500 } }));
     } else {

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import './Register.css';
 
-  const UserRegisterForm = () => {
+const UserRegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -71,7 +71,7 @@ import './Register.css';
   };
 
   return (
-    <div id="signup-form" className="container">
+    <div id="signup-form" className="containers">
       <h2 className="text-center mb-3">SignUp Form</h2>
       <Formik
         initialValues={initialValues}
@@ -80,7 +80,7 @@ import './Register.css';
       >
         {({ values, handleChange }) => (
           <Form>
-            <div className="mb-3">
+            <div className="mb-3 form-group">
               <Field
                 type="text"
                 name="userName"
@@ -91,7 +91,7 @@ import './Register.css';
               />
               <ErrorMessage name="userName" component="p" className="text-danger" />
             </div>
-            <div className="mb-3">
+            <div className="mb-3 form-group">
               <Field
                 type="email"
                 name="email"
@@ -102,7 +102,7 @@ import './Register.css';
               />
               <ErrorMessage name="email" component="p" className="text-danger" />
             </div>
-            <div className="mb-3">
+            <div className="mb-3 form-group">
               <Field
                 type="number"
                 name="mobileNo"
@@ -113,7 +113,7 @@ import './Register.css';
               />
               <ErrorMessage name="mobileNo" component="p" className="text-danger" />
             </div>
-            <div className="input-group mb-3">
+            <div className="input-group mb-3 form-group">
               <Field
                 type={showPassword ? 'text' : 'password'}
                 name="password"
@@ -127,7 +127,7 @@ import './Register.css';
               </span>
               <ErrorMessage name="password" component="p" className="text-danger" />
             </div>
-            <div className="input-group mb-3">
+            <div className="input-group mb-3 form-group">
               <Field
                 type={showPassword ? 'text' : 'password'}
                 name="confirmPassword"
@@ -141,7 +141,7 @@ import './Register.css';
               </span>
               <ErrorMessage name="confirmPassword" component="p" className="text-danger" />
             </div>
-            <div className="mb-3">
+            <div className="mb-3 form-group">
               <Field
                 as="select"
                 name="userRole"

@@ -12,13 +12,14 @@
     background-color: #f0f0f0; 
   }
   
-  .container {
+  .containers {
     width: 100%;
-    max-width: 450px; 
-    padding: 15px;
+    max-width: 400px; 
+    padding: 29px;
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0px 0px 0px rgba(0, 0, 0, 1); 
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   h2 {
@@ -82,6 +83,7 @@
     cursor: pointer;
     margin-left: 140px;
     font-size: medium;
+    margin-top: 15px;
   }
   
   .btn-primary:hover {
@@ -106,18 +108,28 @@
     text-decoration: none;
   }
   
-  @media (max-width: 600px) {
-    .container {
-      padding: 10px;
-    }
-    
-    .form-control,
-    .btn-primary {
-      font-size: 14px;
-    }
-    
-    .toggle-password {
-      font-size: 16px;
-    }
-  }
   
+@media (max-width: 600px) {
+  .btn-primary {
+    padding: 10px;
+    font-size: small;
+    margin-left: 75px;
+  }
+}
+
+@media (min-width: 374px) and (max-width: 768px) {
+  .btn-primary {
+    padding: 11px;
+    font-size: small;
+    margin-top: 20px;
+    margin-left: 100px; 
+  }
+}
+
+@media (min-width: 768px) {
+  .btn-primary {
+    padding: 12px;
+    font-size: medium;
+    margin-left: 120px; 
+  }
+}

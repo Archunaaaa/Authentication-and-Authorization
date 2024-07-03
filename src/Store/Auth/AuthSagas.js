@@ -13,14 +13,14 @@ function* handleLogin(action) {
 
     if (responseBody && responseBody.jwt) {
       localStorage.setItem("token", responseBody.jwt);
-      localStorage.setItem("userRole", responseBody.role); // Store user role in local storage
+      localStorage.setItem("email", responseBody.role); // Store user role in local storage
 
       if (responseBody.role === "USER") {
         action.payload.navigate("/usertable");
       } else if (responseBody.role === "ADMIN") {
         action.payload.navigate("/admintable");
       } else {
-        yield put(loginFailure({ error: "Unexpected user role" }));
+        yield put(loginFailure({ error: { message: "Unexpected user role" } }));
       }
       yield put(loginSuccess({ user: responseBody }));
     } else {
