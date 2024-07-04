@@ -66,10 +66,10 @@ export const loginUser = (userData) => async (dispatch) => {
       const formattedMessage = formatErrorMessage(data.error.message);
       dispatch(loginFailure({ error: { message: formattedMessage, code: data.error.code } }));
     } else {
-      const { token, role } = data.data.body; 
+      const { token, role } = data.data.body;
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
-      dispatch(loginSuccess({ user: data.data.body })); 
+      dispatch(loginSuccess({ user: data.data.body }));
       if (role === "USER") {
         userData.navigate("/usertable");
       } else if (role === "ADMIN") {
@@ -100,10 +100,18 @@ export const registerUser = (userData) => async (dispatch) => {
       const formattedMessage = formatErrorMessage(data.error.message);
       dispatch(registerFailure({ error: { message: formattedMessage, code: data.error.code } }));
     } else {
-      const { token, role } = data.data.body; // Adjusted to match the response structure
+      const { token, role } = data.data.body;
       localStorage.setItem('token', token);
-      localStorage.setItem('role', role); // Store user role in local storage
-      dispatch(registerSuccess({ user: data.data.body })); // Adjusted to match the response structure
+      localStorage.setItem('role', role);
+      dispatch(registerSuccess({ user: data.data.body }));
+      if (role === "USER") {
+        userData.navigate("/usertable");
+      } else if (role === "ADMIN") {
+        userData.navigate("/admintable");
+      } else {
+        dispatch(registerFailure({ error: { message: "Unexpected user role", code: 500 } }));
+        console.error("Unexpected user role", role);
+      }
     }
   } catch (error) {
     if (error.response) {

@@ -11,7 +11,7 @@
     height: 100vh;
     background-color: #f0f0f0; 
   }
-  
+
   .containers {
     width: 100%;
     max-width: 400px; 
@@ -26,10 +26,6 @@
     color: #394867; 
     text-align: center;
     margin-bottom: 20px;
-  }
-  
-  form {
-    width: 100%;
   }
   
   .form-control {
@@ -130,6 +126,6 @@
   .btn-primary {
     padding: 12px;
     font-size: medium;
-    margin-left: 120px; 
+    margin-left: 100px; 
   }
 }

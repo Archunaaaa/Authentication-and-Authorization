@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { Message } from 'primereact/message';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+import './UserTable.css';
 
 const UpdateUser = () => {
   const [userId, setUserId] = useState('');
@@ -12,7 +21,7 @@ const UpdateUser = () => {
   const [role, setRole] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const { username } = useParams(); // Get the username from the URL parameters
+  const { username } = useParams(); 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,7 +66,7 @@ const UpdateUser = () => {
       password: password,
       confirmPassword: confirmPassword,
       userRole: role,
-      userId: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      userId: userId,
     };
 
     try {
@@ -75,61 +84,45 @@ const UpdateUser = () => {
     }
   };
 
+  const roles = [
+    { label: 'User', value: 'USER' },
+    { label: 'Admin', value: 'ADMIN' },
+  ];
+
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSubmit}>
         <h2>Update User</h2>
-        <input
-          type="text"
-          placeholder="User ID"
-          value={userId}
-        />
-        <input
-          type="text"
-          placeholder="User Name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Mobile Number"
-          value={mobileNo}
-          onChange={(e) => setMobileNo(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          required
-        >
-          <option value="">Select Role</option>
-          <option value="USER">User</option>
-          <option value="ADMIN">Admin</option>
-        </select>
-        <button type="submit">Update</button>
-        {message && <p>{message}</p>}
+        <div className="p-field">
+          <label htmlFor="userId">User ID</label>
+          <InputText id="userId" value={userId} disabled />
+        </div>
+        <div className="p-field">
+          <label htmlFor="fullName">User Name</label>
+          <InputText id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+        </div>
+        <div className="p-field">
+          <label htmlFor="email">Email</label>
+          <InputText id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </div>
+        <div className="p-field">
+          <label htmlFor="mobileNo">Mobile Number</label>
+          <InputText id="mobileNo" value={mobileNo} onChange={(e) => setMobileNo(e.target.value)} required />
+        </div>
+        <div className="p-field">
+          <label htmlFor="password">Password</label>
+          <Password id="password" value={password} onChange={(e) => setPassword(e.target.value)} required toggleMask />
+        </div>
+        <div className="p-field">
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <Password id="confirmPassword" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required toggleMask />
+        </div>
+        <div className="p-field">
+          <label htmlFor="role">Role</label>
+          <Dropdown id="role" value={role} options={roles} onChange={(e) => setRole(e.value)} placeholder="Select Role" required />
+        </div>
+        <Button type="submit" label="Update" />
+        {message && <Message severity="info" text={message} />}
       </form>
     </div>
   );

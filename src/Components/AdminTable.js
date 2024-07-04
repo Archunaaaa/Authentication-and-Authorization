@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Alert } from '@mui/material';
+import { Container, Typography } from '@mui/material';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Message } from 'primereact/message';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 import './UserTable.css';
 
 const AdminTable = () => {
@@ -36,7 +42,7 @@ const AdminTable = () => {
   if (error) {
     return (
       <Container className="tab-style">
-        <Alert severity="error">{error}</Alert>
+        <Message severity="error" text={error} />
       </Container>
     );
   }
@@ -46,28 +52,12 @@ const AdminTable = () => {
       <Typography variant="h2" gutterBottom>
         Admin Profile
       </Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>User Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Mobile Number</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users && users.map(user => (
-              <TableRow key={user.userId}>
-                <TableCell>{user.userName}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.mobileNo}</TableCell>
-                <TableCell>{user.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <DataTable value={users} className="p-datatable-sm" paginator rows={10}>
+        <Column field="userName" header="User Name" sortable />
+        <Column field="email" header="Email" sortable />
+        <Column field="mobileNo" header="Mobile Number" sortable />
+        <Column field="status" header="Status" sortable />
+      </DataTable>
     </Container>
   );
 };

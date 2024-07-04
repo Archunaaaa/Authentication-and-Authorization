@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './Store/Auth/Store'; 
 import UserLoginForm from './Components/Login/UserLoginForm';
@@ -12,7 +12,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <div className="container">
-        <BrowserRouter>
+        <Router>
           <Routes>
             <Route path="/" element={<UserRegisterForm />} />
             <Route path="/login" element={<UserLoginForm />} />
@@ -20,7 +20,7 @@ const App = () => {
             <Route path="/admintable" element={<AdminTable />} />
             <Route path="/edit/:userId" element={<UpdateUser />} />
           </Routes>
-        </BrowserRouter>
+        </Router>
       </div>
     </Provider>
   );

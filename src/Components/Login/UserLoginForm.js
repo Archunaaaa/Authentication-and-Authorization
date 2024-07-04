@@ -12,6 +12,7 @@ const UserLoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { error, message } = useSelector((state) => state.auth);
 
   const initialValues = {
     email: '',
@@ -23,12 +24,10 @@ const UserLoginForm = () => {
     password: Yup.string().required('Password is required'),
   });
 
-  const { error, message } = useSelector((state) => state.auth);
-
   useEffect(() => {
     if (message === 'Login successful!') {
-      const role = localStorage.getItem('role');
-      navigate(role === 'USER' ? '/usertable' : '/admintable');
+      const userRole = localStorage.getItem('userRole');
+      navigate(userRole === 'USER' ? '/usertable' : '/admintable');
     }
   }, [message, navigate]);
 
@@ -36,9 +35,19 @@ const UserLoginForm = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleLoginSubmit = (values, { setSubmitting }) => {
-    dispatch(loginUser({ ...values, navigate }));
-    setSubmitting(false);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      // Dispatch login action
+      await dispatch(loginUser(values));
+
+      // If login successful, redirect based on user role
+      const userRole = localStorage.getItem('userRole');
+      navigate(userRole === 'USER' ? '/usertable' : '/admintable');
+    } catch (error) {
+      console.error('Error logging in:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -47,11 +56,11 @@ const UserLoginForm = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleLoginSubmit}
+        onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form>
-            <div className="form-group mb-3">
+            <div className="mb-3">
               <Field
                 type="email"
                 name="email"
@@ -72,7 +81,7 @@ const UserLoginForm = () => {
               </span>
               <ErrorMessage name="password" component="p" className="text-danger" />
             </div>
-            <button type="submit" className="btn btn-primarys fw-bold w-100" disabled={isSubmitting}>
+            <button type="submit" className="btn btn-primary fw-bold" disabled={isSubmitting}>
               Login
             </button>
             {error && <p className="text-center mt-3 text-danger">{error.message}</p>}
