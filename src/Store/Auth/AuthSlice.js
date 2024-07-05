@@ -1,128 +1,116 @@
-import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,
+  isAdminExists: false,
+  message: "",
+  errors: {},
+  user: {},
+  loading: false,
   error: null,
-  message: null,
+  users: [],
+  userData: [],
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
-    loginRequest: (state) => {
+    registerRequest(state) {
+      state.loading = true;
       state.error = null;
-      state.message = null;
     },
-    loginSuccess: (state, action) => {
-      state.user = action.payload.user;
-      state.message = 'Login successful!';
+    registerSuccess(state, action) {
+      state.loading = false;
+      state.message = "User registered successfully!";
+      state.errors = {};
     },
-    loginFailure: (state, action) => {
-      state.error = action.payload.error;
-      state.message = null;
+    registerFailure(state, action) {
+      state.loading = false;
+      state.message = "";
+      state.errors = action.payload;
     },
-    registerRequest: (state) => {
+    loginRequest(state) {
+      state.loading = true;
       state.error = null;
-      state.message = null;
     },
-    registerSuccess: (state, action) => {
-      state.user = action.payload.user;
-      state.message = 'User registered successfully!';
+    loginSuccess(state, action) {
+      state.loading = false;
+      state.user = action.payload;
     },
-    registerFailure: (state, action) => {
-      state.error = action.payload.error;
-      state.message = null;
+    loginFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    fetchUsersRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchUsersSuccess(state, action) {
+      state.loading = false;
+      state.users = action.payload;
+    },
+    fetchUsersFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    fetchUserRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    fetchUserSuccess(state, action) {
+      state.loading = false;
+      state.userData = action.payload;
+    },
+    fetchUserFailure(state, action) {
+      state.loading = false;
+      state.userData = null;
+      state.error = action.payload;
+    },
+    updateUserRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateUserSuccess(state, action) {
+      state.loading = false;
+      state.userData = action.payload;
+    },
+    updateUserFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteUserRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteUserSuccess(state) {
+      state.loading = false;
+    },
+    deleteUserFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 });
 
 export const {
-  loginRequest,
-  loginSuccess,
-  loginFailure,
   registerRequest,
   registerSuccess,
   registerFailure,
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  fetchUsersRequest,
+  fetchUsersSuccess,
+  fetchUsersFailure,
+  fetchUserRequest,
+  fetchUserSuccess,
+  fetchUserFailure,
+  updateUserRequest,
+  updateUserSuccess,
+  updateUserFailure,
+  deleteUserRequest,
+  deleteUserSuccess,
+  deleteUserFailure,
 } = authSlice.actions;
-
-const formatErrorMessage = (message) => {
-  const errorMessages = {
-    "Usernot found.!": "User not found!",
-  };
-  return errorMessages[message] || message;
-};
-
-export const loginUser = (userData) => async (dispatch) => {
-  dispatch(loginRequest());
-  try {
-    const response = await axios.post('http://localhost:8080/api/auth/user/login', {
-      email: userData.email,
-      password: userData.password,
-    });
-    const { data } = response;
-    if (data.status === 0) {
-      const formattedMessage = formatErrorMessage(data.error.message);
-      dispatch(loginFailure({ error: { message: formattedMessage, code: data.error.code } }));
-    } else {
-      const { token, role } = data.data.body;
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
-      dispatch(loginSuccess({ user: data.data.body }));
-      if (role === "USER") {
-        userData.navigate("/usertable");
-      } else if (role === "ADMIN") {
-        userData.navigate("/admintable");
-      } else {
-        dispatch(loginFailure({ error: { message: "Unexpected user role", code: 500 } }));
-        console.error("Unexpected user role", role);
-      }
-    }
-  } catch (error) {
-    if (error.response) {
-      const formattedMessage = formatErrorMessage(error.response.data.message);
-      dispatch(loginFailure({ error: { message: formattedMessage, code: error.response.status } }));
-    } else if (error.request) {
-      dispatch(loginFailure({ error: { message: 'No response received from server.', code: 500 } }));
-    } else {
-      dispatch(loginFailure({ error: { message: 'Something went wrong while sending the request.', code: 500 } }));
-    }
-  }
-};
-
-export const registerUser = (userData) => async (dispatch) => {
-  dispatch(registerRequest());
-  try {
-    const response = await axios.post('http://localhost:8080/api/auth/user/register', userData);
-    const { data } = response;
-    if (data.status === 0) {
-      const formattedMessage = formatErrorMessage(data.error.message);
-      dispatch(registerFailure({ error: { message: formattedMessage, code: data.error.code } }));
-    } else {
-      const { token, role } = data.data.body;
-      localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
-      dispatch(registerSuccess({ user: data.data.body }));
-      if (role === "USER") {
-        userData.navigate("/usertable");
-      } else if (role === "ADMIN") {
-        userData.navigate("/admintable");
-      } else {
-        dispatch(registerFailure({ error: { message: "Unexpected user role", code: 500 } }));
-        console.error("Unexpected user role", role);
-      }
-    }
-  } catch (error) {
-    if (error.response) {
-      const formattedMessage = formatErrorMessage(error.response.data.message);
-      dispatch(registerFailure({ error: { message: formattedMessage, code: error.response.status } }));
-    } else if (error.request) {
-      dispatch(registerFailure({ error: { message: 'No response received from server.', code: 500 } }));
-    } else {
-      dispatch(registerFailure({ error: { message: 'Something went wrong while sending the request.', code: 500 } }));
-    }
-  }
-};
 
 export default authSlice.reducer;

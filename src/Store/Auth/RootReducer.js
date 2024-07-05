@@ -1,10 +1,12 @@
-// src/app/rootReducer.js
-import { combineReducers } from '@reduxjs/toolkit';
-import authReducer from '../Auth/AuthSlice';
+import { createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+import { Provider } from 'react-redux';
+import signupReducer from '../Auth/AuthSlice';
+import rootSaga from '../Auth/AuthSagas';
 
-const rootReducer = combineReducers({
-  auth: authReducer,
-  // Add other reducers here if any
-});
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(signupReducer, applyMiddleware(sagaMiddleware));
 
-export default rootReducer;
+sagaMiddleware.run(rootSaga);
+
+export default store;

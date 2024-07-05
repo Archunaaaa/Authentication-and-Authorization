@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { loginUser } from '../../Store/Auth/AuthSlice';
+import * as Yup from 'yup'; 
+import { loginRequest } from '../../Store/Auth/AuthAction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import './Login.css';
 
 const UserLoginForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error, message } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { error, user } = useSelector(state => state.auth); 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const initialValues = {
     email: '',
@@ -24,31 +28,17 @@ const UserLoginForm = () => {
     password: Yup.string().required('Password is required'),
   });
 
-  useEffect(() => {
-    if (message === 'Login successful!') {
-      const userRole = localStorage.getItem('userRole');
-      navigate(userRole === 'USER' ? '/usertable' : '/admintable');
-    }
-  }, [message, navigate]);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+  const handleSubmit = values => {
+    dispatch(loginRequest(values));
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      // Dispatch login action
-      await dispatch(loginUser(values));
-
-      // If login successful, redirect based on user role
-      const userRole = localStorage.getItem('userRole');
-      navigate(userRole === 'USER' ? '/usertable' : '/admintable');
-    } catch (error) {
-      console.error('Error logging in:', error);
-    } finally {
-      setSubmitting(false);
+  if (user) {
+    if (user.role === 'USER') {
+      navigate('/usertable');
+    } else if (user.role === 'ADMIN') {
+      navigate('/admintable');
     }
-  };
+  }
 
   return (
     <div id="login-form" className="container mt-5">
@@ -92,7 +82,6 @@ const UserLoginForm = () => {
           </Form>
         )}
       </Formik>
-      {message && <p className="text-center mt-3">{message}</p>}
     </div>
   );
 };
