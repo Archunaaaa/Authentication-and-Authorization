@@ -1,4 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import {
+  SIGNUP_SUCCESS,
+  SIGNUP_FAILURE,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  FETCH_USERS_REQUEST,
+  FETCH_USERS_SUCCESS,
+  FETCH_USERS_FAILURE,
+  FETCH_USER_SUCCESS,
+  UPDATE_USER_SUCCESS,
+  DELETE_USER_SUCCESS,
+  FETCH_USER_FAILURE,
+  DELETE_USER_FAILURE,
+  UPDATE_USER_FAILURE,
+} from "../Auth/AuthAction";
 
 const initialState = {
   isAdminExists: false,
@@ -8,109 +23,72 @@ const initialState = {
   loading: false,
   error: null,
   users: [],
-  userData: [],
+  userData: [], // Initialize userData as null
 };
 
-const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    registerRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    registerSuccess(state, action) {
-      state.loading = false;
-      state.message = "User registered successfully!";
-      state.errors = {};
-    },
-    registerFailure(state, action) {
-      state.loading = false;
-      state.message = "";
-      state.errors = action.payload;
-    },
-    loginRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    loginSuccess(state, action) {
-      state.loading = false;
-      state.user = action.payload;
-    },
-    loginFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-    fetchUsersRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchUsersSuccess(state, action) {
-      state.loading = false;
-      state.users = action.payload;
-    },
-    fetchUsersFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-    fetchUserRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchUserSuccess(state, action) {
-      state.loading = false;
-      state.userData = action.payload;
-    },
-    fetchUserFailure(state, action) {
-      state.loading = false;
-      state.userData = null;
-      state.error = action.payload;
-    },
-    updateUserRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    updateUserSuccess(state, action) {
-      state.loading = false;
-      state.userData = action.payload;
-    },
-    updateUserFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-    deleteUserRequest(state) {
-      state.loading = true;
-      state.error = null;
-    },
-    deleteUserSuccess(state) {
-      state.loading = false;
-    },
-    deleteUserFailure(state, action) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-  },
-});
+const signupReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case SIGNUP_SUCCESS:
+      return { ...state, message: "User registered successfully!", errors: {} };
+    case SIGNUP_FAILURE:
+      console.log(action.payload);
+      return { ...state, message: "", errors: action.payload };
+    case LOGIN_REQUEST:
+      return { ...state, loading: true, error: null };
+    case LOGIN_SUCCESS:
+      return { ...state, loading: false, user: action.payload };
+    case LOGIN_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+    case FETCH_USERS_REQUEST:
+      return { ...state, loading: true, error: null };
+    case FETCH_USERS_SUCCESS:
+      return { ...state, loading: false, users: action.payload };
+    case FETCH_USERS_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+    case FETCH_USER_SUCCESS:
+      return { ...state, loading: false, user: { ...action.payload.Details } };
+    case UPDATE_USER_SUCCESS:
+      return { ...state, userData: action.payload, error: null };
+    case DELETE_USER_SUCCESS:
+      return { ...state, userData: null, error: null };
+    case FETCH_USER_FAILURE:
+    case UPDATE_USER_FAILURE:
+    case DELETE_USER_FAILURE:
+      return { ...state, error: action.payload };
+    case FETCH_USER_SUCCESS:
+      return {
+        ...state,
+        userData: action.payload,
+        error: null,
+      };
+    case FETCH_USER_FAILURE:
+      return {
+        ...state,
+        userData: null,
+        error: action.payload,
+      };
+    case UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        userData: action.payload,
+        error: null,
+      };
+    case UPDATE_USER_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case DELETE_USER_SUCCESS:
+      return { ...state };
+    case DELETE_USER_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      };
 
-export const {
-  registerRequest,
-  registerSuccess,
-  registerFailure,
-  loginRequest,
-  loginSuccess,
-  loginFailure,
-  fetchUsersRequest,
-  fetchUsersSuccess,
-  fetchUsersFailure,
-  fetchUserRequest,
-  fetchUserSuccess,
-  fetchUserFailure,
-  updateUserRequest,
-  updateUserSuccess,
-  updateUserFailure,
-  deleteUserRequest,
-  deleteUserSuccess,
-  deleteUserFailure,
-} = authSlice.actions;
+    default:
+      return state;
+  }
+};
 
-export default authSlice.reducer;
+export default signupReducer;

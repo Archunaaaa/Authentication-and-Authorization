@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import { takeLatest, call, put } from "redux-saga/effects";
 import { signupUser, loginUser, fetching, deleteUser } from "../Auth/Api";
 import {
@@ -116,6 +115,8 @@ function* fetchUserSaga(action) {
     const token = localStorage.getItem("token");
 
     const response = yield call(fetching, email, token);
+
+    
     yield put({ type: FETCH_USER_SUCCESS, payload: response.data });
   } catch (error) {
     yield put({
@@ -156,6 +157,8 @@ function* deleteUserSaga(action) {
     const token = localStorage.getItem("token");
     yield call(deleteUser, user, token);
     yield put({ type: DELETE_USER_SUCCESS });
+    // Optionally, you can dispatch a fetch action here to refresh the user list
+    // yield put(fetching());
   } catch (error) {
     yield put({
       type: DELETE_USER_FAILURE,
