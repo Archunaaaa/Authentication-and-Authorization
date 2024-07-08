@@ -1,64 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Container, Typography } from '@mui/material';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Message } from 'primereact/message';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import './UserTable.css';
+import * as React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { DataGrid } from "@mui/x-data-grid";
+import { fetchUsersRequest, deleteUser } from "../Store/Auth/AuthAction";
+import { useNavigate } from "react-router-dom";
+import { Button, Typography, Box, IconButton, InputAdornment, TextField } from "@mui/material";
+import { Add as AddIcon, Search as SearchIcon, Clear as ClearIcon } from "@mui/icons-material";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "./UserTable.css";
 
 const AdminTable = () => {
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { users } = useSelector((state) => state);
+  const [searchText, setSearchText] = React.useState("");
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const token = localStorage.getItem('token');
-      const getAllusers = localStorage.getItem('getAllusers');
-      if (!token || !getAllusers) {
-        setError('Token not found in local storage');
-        return;
-      }
+    dispatch(fetchUsersRequest());
+  }, [dispatch]);
 
-      try {
-        const response = await axios.get(`http://localhost:8080/api/admin/${getAllusers}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const handleDelete = (email) => {
+    if (window.confirm("Are you sure you want to delete this Admin?")) {
+      dispatch(deleteUser(email));
+      navigate("/login");
+    }
+  };
 
-        setUsers(response.data);
-      } catch (error) {
-        setError('Error fetching user data');
-        console.error('Error fetching user data:', error);
-      }
-    };
+  const handleSearchChange = (event) => {
+    setSearchText(event.target.value);
+  };
 
-    fetchUsers();
-  }, []);
+  const handleClearSearch = () => {
+    setSearchText("");
+  };
 
-  if (error) {
-    return (
-      <Container className="tab-style">
-        <Message severity="error" text={error} />
-      </Container>
-    );
-  }
+  const filteredRows = users.filter((user) =>
+    user.userName.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const openNew = () => {
+    navigate("/");
+  };
+
+  const columns = [
+    { field: "userName", headerName: "User Name", width: 180 },
+    { field: "email", headerName: "Email", width: 200 },
+    { field: "mobileNo", headerName: "Mobile Number", width: 180 },
+    { field: "status", headerName: "Status", width: 120 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => handleDelete(params.row.email)}
+        >
+          Delete
+        </Button>
+      ),
+    },
+  ];
+
+  const rows = filteredRows.map((user) => ({
+    id: user.userId,
+    userName: user.userName,
+    email: user.email,
+    mobileNo: user.mobileNo,
+    status: user.status,
+  }));
 
   return (
-    <Container className="tab-style">
-      <Typography variant="h2" gutterBottom>
-        Admin Profile
-      </Typography>
-      <DataTable value={users} className="p-datatable-sm" paginator rows={10}>
-        <Column field="userName" header="User Name" sortable />
-        <Column field="email" header="Email" sortable />
-        <Column field="mobileNo" header="Mobile Number" sortable />
-        <Column field="status" header="Status" sortable />
-      </DataTable>
-    </Container>
+    <Box className="container mt-5" sx={{ border: "2px solid #ccc", padding: "20px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+        <Button variant="contained" color="primary" onClick={openNew} startIcon={<AddIcon />}>
+          New
+        </Button>
+        <Typography variant="h4" sx={{ marginLeft: "20px" }}>
+          User Profile
+        </Typography>
+        <Box sx={{ marginLeft: "auto", marginRight: "5px" }}>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            value={searchText}
+            onChange={handleSearchChange}  
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {searchText && (
+                    <IconButton onClick={handleClearSearch} size="small">
+                      <ClearIcon />
+                    </IconButton>
+                  )}
+                  <IconButton size="small">
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      </Box>
+      <div style={{ height: 400, width: "100%", border: "2px solid #ccc", borderRadius: "8px" }}>
+        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+      </div>
+    </Box>
   );
 };
 

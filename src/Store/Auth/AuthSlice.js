@@ -31,7 +31,6 @@ const signupReducer = (state = initialState, action) => {
     case SIGNUP_SUCCESS:
       return { ...state, message: "User registered successfully!", errors: {} };
     case SIGNUP_FAILURE:
-      console.log(action.payload);
       return { ...state, message: "", errors: action.payload };
     case LOGIN_REQUEST:
       return { ...state, loading: true, error: null };

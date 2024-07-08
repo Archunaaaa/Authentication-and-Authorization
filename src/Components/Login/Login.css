@@ -42,4 +42,14 @@
     cursor: pointer;
   }
 
-  
+ 
+
+.password-toggle-icon {
+  position: absolute;
+  top: 40%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+
+}
+

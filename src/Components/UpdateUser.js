@@ -121,7 +121,7 @@ const UpdateUser = () => {
           <label htmlFor="role">Role</label>
           <Dropdown id="role" value={role} options={roles} onChange={(e) => setRole(e.value)} placeholder="Select Role" required />
         </div>
-        <Button type="submit" label="Update" />
+        <Button className='text-center' type="submit" label="Update" />
         {message && <Message severity="info" text={message} />}
       </form>
     </div>
