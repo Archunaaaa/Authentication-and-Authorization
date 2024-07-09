@@ -65,7 +65,7 @@ const UserRegisterForm = () => {
 
   return (
     <div id="signup-form" className="containers top">
-        <h2 className="text-center fw-bold mb-3">Register Form </h2>
+        <h2 className="text-center fw-bold mb-3 text-success">Register Form </h2>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}

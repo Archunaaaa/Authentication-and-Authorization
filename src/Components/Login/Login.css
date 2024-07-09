@@ -1,48 +1,48 @@
 .btn-primarys {
-    background-color: #394867; 
-    color: #ffffff; 
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-left: 85px;
-    font-size: medium;
-  }
-  
-  .btn-primarys:hover {
-    background-color: #293649; }
+  background-color: #394867; 
+  color: #ffffff; 
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 0px;
+  font-size: medium;
+}
 
-  .text-decoration-none {
-    text-decoration: none;
-  }
-  .container {
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  #login-form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 2rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #fff;
-  }
-  
-  .form-group {
-    position: relative;
-  }
-  
-  .form-control {
-    padding-right: 2.5rem;
-  }
-  
-  .position-absolute {
-    cursor: pointer;
-  }
+.btn-primarys:hover {
+  background-color: #293649;
+}
 
- 
+.text-decoration-none {
+  text-decoration: none;
+}
+
+.container {
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-control {
+  padding-right: 2.5rem;
+}
+
+.position-absolute {
+  cursor: pointer;
+}
 
 .password-toggle-icon {
   position: absolute;
@@ -50,6 +50,6 @@
   right: 10px;
   transform: translateY(-50%);
   cursor: pointer;
-
 }
+
 

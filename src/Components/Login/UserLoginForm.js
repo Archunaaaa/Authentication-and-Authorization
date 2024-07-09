@@ -47,8 +47,8 @@ const UserLoginForm = () => {
   }
 
   return (
-    <div id="login-form" className="container">
-      <h2 className="text-center fw-bold mb-3">Login Form</h2>
+    <div id="login-form" className="containers">
+      <h2 className="text-center text-success fw-bold mb-3">Login Form</h2>
       <form onSubmit={formik.handleSubmit}>
         <div className="mb-3">
           <input
@@ -83,7 +83,7 @@ const UserLoginForm = () => {
           Login
         </button>
         <p className="text-center mt-3">
-          Don't have an account? <a href="/" className="text-decoration-none">Sign Up</a>
+          Don't have an account? <a href="/signup" className="text-decoration-none">Sign Up</a>
         </p>
         <hr />
       </form>
